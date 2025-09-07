@@ -36,3 +36,10 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+tokens
+credentials.json
+gmail-runner/target
+meeting-attendance-service/target
+gmail-runner/src/main/resources/application.properties
+meeting-attendance-service/src/main/resources/application.properties
