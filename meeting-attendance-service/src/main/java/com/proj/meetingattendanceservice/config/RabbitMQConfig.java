@@ -1,47 +1,50 @@
-package com.proj.meetingattendanceservice.config; // Make sure this package name matches your project's
+package com.proj.meetingattendanceservice.config;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String EXCHANGE_NAME = "meet-links-exchange";
-    public static final String QUEUE_NAME = "meet-links-queue";
-    public static final String ROUTING_KEY = "meet.link.new";
+    public static final String INBOUND_QUEUE_NAME = "meet-links-queue";
+    public static final String OUTBOUND_QUEUE_NAME = "audio-chunks-queue";
+    public static final String EXCHANGE_NAME = "meeting-exchange";
 
-    /**
-     * Defines the durable queue that will hold the meet links.
-     * @return a Queue bean.
-     */
+    // NEW: This bean configures Spring to use a JSON message converter.
+    // It will automatically convert our DTOs to and from JSON.
     @Bean
-    Queue queue() {
-        // durable=true means the queue will survive a broker restart
-        return new Queue(QUEUE_NAME, true);
+    public MessageConverter jsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
 
-    /**
-     * Defines the topic exchange that will receive messages from the producer.
-     * @return a TopicExchange bean.
-     */
     @Bean
-    TopicExchange exchange() {
+    public Queue inboundQueue() {
+        return new Queue(INBOUND_QUEUE_NAME, true);
+    }
+
+    @Bean
+    public Queue outboundQueue() {
+        return new Queue(OUTBOUND_QUEUE_NAME, true);
+    }
+
+    @Bean
+    public TopicExchange exchange() {
         return new TopicExchange(EXCHANGE_NAME);
     }
 
-    /**
-     * Creates a binding between the queue and the exchange, using the routing key.
-     * This tells the exchange to forward messages with this routing key to our queue.
-     * @param queue the queue bean
-     * @param exchange the exchange bean
-     * @return a Binding bean.
-     */
     @Bean
-    Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
+    public Binding inboundBinding(Queue inboundQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(inboundQueue).to(exchange).with("link.#");
+    }
+
+    @Bean
+    public Binding outboundBinding(Queue outboundQueue, TopicExchange exchange) {
+        return BindingBuilder.bind(outboundQueue).to(exchange).with("audio.#");
     }
 }

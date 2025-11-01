@@ -1,26 +1,26 @@
 package com.proj.meetingattendanceservice.consumers;
 
+import com.proj.meetingattendanceservice.config.RabbitMQConfig;
 import com.proj.meetingattendanceservice.services.MeetingJoinerService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class MeetingLinkConsumer {
 
-    public static final String QUEUE_NAME = "meet-links-queue";
+    private final MeetingJoinerService meetingJoinerService;
 
-    @Autowired
-    private MeetingJoinerService meetingJoinerService;
-
-    @RabbitListener(queues = QUEUE_NAME)
+    @RabbitListener(queues = RabbitMQConfig.INBOUND_QUEUE_NAME)
     public void receiveMeetLink(String meetLink) {
-        System.out.println("📥 Received link from queue: " + meetLink);
+        log.info("📥 Received link from queue: {}", meetLink);
         try {
             meetingJoinerService.joinMeet(meetLink);
         } catch (Exception e) {
-            System.err.println("Failed to join meeting: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Failed to initiate meeting join process for link: {}", meetLink, e);
         }
     }
 }

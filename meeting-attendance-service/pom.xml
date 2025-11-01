@@ -55,6 +55,24 @@
 			<artifactId>spring-rabbit-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-json</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/net.bramp.ffmpeg/ffmpeg -->
+		<dependency>
+			<groupId>net.bramp.ffmpeg</groupId>
+			<artifactId>ffmpeg</artifactId>
+			<version>0.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.38</version>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>

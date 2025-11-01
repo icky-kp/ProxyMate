@@ -118,16 +118,25 @@ public class GmailReaderService {
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
                 new InputStreamReader(Files.newInputStream(Paths.get(credentialsFilePath))));
 
-        // Build the authorization flow.
+        // Build the authorization flow with force approval prompt
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(new FileDataStoreFactory(new File(tokensDirPath)))
                 .setAccessType("offline")
+                .setApprovalPrompt("force")  // This forces the generation of refresh token
                 .build();
 
-        // Authorize and get credentials. This will open a browser for user consent on the first run.
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize(userId);
+        // Authorize and get credentials
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder()
+                .setPort(8888)
+                .build();
+        
+        // Clear credentials if they exist
+        flow.getCredentialDataStore().clear();
+        
+        // Get new credentials
+        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver)
+                .authorize(userId);
 
         return new Gmail.Builder(httpTransport, JSON_FACTORY, credential)
                 .setApplicationName(appName)
