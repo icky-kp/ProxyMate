@@ -1,38 +1,35 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# Compiled output
+**/target/
+**/build/
+*.jar
+*.war
+*.ear
 
-### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
+# Logs
+*.log
+
+# IDE files
+.idea/
 *.iml
+*.iws
 *.ipr
-
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
 .vscode/
 
-### Mac OS ###
+# OS-specific
 .DS_Store
+Thumbs.db
+
+# --- SECRETS AND CONFIGURATION ---
+# This is the most important part
+
+# Ignore all environment files
+.env
+.env.*
+
+# Ignore Google credentials and tokens
+credentials.json
+**/tokens/
+
+# Ignore all application.properties files in all sub-projects
+# We will use environment variables instead
+**/application.properties

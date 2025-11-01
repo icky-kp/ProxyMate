@@ -14,8 +14,10 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <modules>
-    <module>gmail-polling-service</module>
+    <module>gmail-runner</module>
     <module>meeting-attendance-service</module>
+    <module>transcription-service</module>
+    <module>llmSummary-service</module>
   </modules>
 
   <dependencies>
